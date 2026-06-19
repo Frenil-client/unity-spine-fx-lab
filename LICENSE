@@ -1,0 +1,34 @@
+MIT License
+
+Copyright (c) 2026 정휘현 (Frenil-client)
+
+본 라이선스는 이 저장소의 **소스 코드**(셰이더 .shader/.hlsl, C# 런타임·에디터
+스크립트, 문서)에 한해 적용된다.
+
+다음 자산은 본 MIT 라이선스의 적용 대상이 아니며 작성자가 모든 권리를 보유한다:
+  - 직접 제작한 텍스처(디졸브 노이즈/마스크/SDF 맵 등)
+  - 직접 제작한 Spine 스켈레톤·아틀라스 등 자작 아트 자산
+이들 자산의 재배포·상업적 이용은 작성자의 별도 허가를 필요로 한다.
+
+Spine 런타임(spine-unity) 및 Spine 예제 에셋, 기타 서드파티 소프트웨어/자산은
+THIRD_PARTY_NOTICES.md 및 각 자산의 라이선스 약관을 따른다.
+
+---
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
