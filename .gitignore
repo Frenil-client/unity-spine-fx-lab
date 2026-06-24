@@ -86,9 +86,10 @@ desktop.ini
 
 # ----------------------------------------------------------------------------
 # Markdown docs are managed locally; only README.md and Docs/ notes are shared.
-# (CLAUDE.md, DEV_SPEC*.md, THIRD_PARTY_NOTICES.md stay local)
+# (CLAUDE.md, DEV_SPEC*.md stay local; THIRD_PARTY_NOTICES.md is shared)
 # Docs/**/*.md (분석 노트 등)는 포트폴리오 산출물이라 공개한다.
 # ----------------------------------------------------------------------------
 *.md
 !README.md
+!THIRD_PARTY_NOTICES.md
 !Docs/**/*.md
