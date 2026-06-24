@@ -1,0 +1,25 @@
+{
+    "name": "SpineFxLab.Editor",
+    "rootNamespace": "SpineFxLab.Editor",
+    "references": [
+        "SpineFxLab.Runtime",
+        "SpineFxLab.Demo",
+        "spine-csharp",
+        "spine-unity",
+        "spine-unity-editor",
+        "Unity.RenderPipelines.Universal.Runtime",
+        "Unity.RenderPipelines.Universal.2D.Runtime",
+        "Unity.RenderPipelines.Core.Runtime"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

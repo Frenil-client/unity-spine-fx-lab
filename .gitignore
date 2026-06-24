@@ -85,9 +85,10 @@ Thumbs.db
 desktop.ini
 
 # ----------------------------------------------------------------------------
-# Markdown docs are managed locally; only README.md is shared in the repo
-# (CLAUDE.md, DEV_SPEC*.md, THIRD_PARTY_NOTICES.md, Docs notes stay local)
-# README.md at any depth is kept so per-folder docs can still be published.
+# Markdown docs are managed locally; only README.md and Docs/ notes are shared.
+# (CLAUDE.md, DEV_SPEC*.md, THIRD_PARTY_NOTICES.md stay local)
+# Docs/**/*.md (분석 노트 등)는 포트폴리오 산출물이라 공개한다.
 # ----------------------------------------------------------------------------
 *.md
 !README.md
+!Docs/**/*.md

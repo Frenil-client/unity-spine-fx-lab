@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f14d609a7e4902408346bbbe90bc8a1, type: 3}
+  m_Name: FxPreset_Dissolve
+  m_EditorClassIdentifier: SpineFxLab.Runtime::SpineFxLab.Data.FxPreset
+  color: {r: 1, g: 1, b: 1, a: 1}
+  alpha: 1
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
+  flashAmount: 0
+  tintColor: {r: 1, g: 1, b: 1, a: 1}
+  tintAmount: 0
+  grayscale: 0
+  dissolveAmount: 0.55
+  dissolveEdgeWidth: 0.06
+  dissolveEdgeColor: {r: 1, g: 0.6, b: 0.1, a: 1}

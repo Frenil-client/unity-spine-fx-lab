@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: spineboy_ShowcaseMaterial
+  m_Shader: {fileID: 4800000, guid: b6e2f9cd107adb9498b6045ce507d73f, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - _DISSOLVE_ON
+  - _FLASH_ON
+  - _STATUS_ELECTRIC
+  - _STATUS_FREEZE
+  - _STATUS_POISON
+  - _STATUS_SHIELD
+  - _STRAIGHT_ALPHA_INPUT
+  - _TINT_ON
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _DissolveNoise:
+        m_Texture: {fileID: 2800000, guid: b9b2a810b46f4af40a4dceee52100a6c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 6806a12f05d7265489a2c48dbfcdc057, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _DissolveAmount: 0
+    - _DissolveEdgeWidth: 0.05
+    - _DissolveEnabled: 1
+    - _ElectricAmount: 0
+    - _ElectricEnabled: 1
+    - _FlashAmount: 0
+    - _FlashEnabled: 1
+    - _FreezeAmount: 0
+    - _FreezeEnabled: 1
+    - _Grayscale: 0
+    - _OutlineEnabled: 0
+    - _OutlineThreshold: 0.5
+    - _OutlineWidth: 2
+    - _PoisonAmount: 0
+    - _PoisonEnabled: 1
+    - _ShieldAmount: 0
+    - _ShieldEnabled: 1
+    - _SilhouetteEnabled: 0
+    - _StencilComp: 8
+    - _StencilRef: 1
+    - _StraightAlphaInput: 1
+    - _TintAmount: 0
+    - _TintEnabled: 1
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _DissolveEdgeColor: {r: 1, g: 0.6, b: 0.1, a: 1}
+    - _ElectricColor: {r: 0.6, g: 0.9, b: 1.4, a: 1}
+    - _FlashColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FreezeColor: {r: 0.6, g: 0.85, b: 1.1, a: 1}
+    - _OutlineColor: {r: 1, g: 1, b: 1, a: 1}
+    - _PoisonColor: {r: 0.5, g: 1, b: 0.2, a: 1}
+    - _ShieldColor: {r: 1, g: 0.9, b: 0.4, a: 1}
+    - _SilhouetteColor: {r: 0, g: 0, b: 0, a: 1}
+    - _TintColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

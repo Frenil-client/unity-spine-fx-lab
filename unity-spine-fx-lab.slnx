@@ -1,2 +1,5 @@
 ﻿<Solution>
+  <Project Path="SpineFxLab.Demo.csproj" />
+  <Project Path="SpineFxLab.Runtime.csproj" />
+  <Project Path="SpineFxLab.Editor.csproj" />
 </Solution>

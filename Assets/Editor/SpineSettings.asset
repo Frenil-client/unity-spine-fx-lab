@@ -35,7 +35,7 @@ MonoBehaviour:
   skeletonDataAssetNoFileError: 1
   workflowMismatchDialog: 1
   skeletonDataAssetMismatchWarning: 1
-  splitComponentChangeWarning: 1
+  splitComponentChangeWarning: 0
   autoReloadSceneSkeletons: 1
   handleScale: 1
   mecanimEventIncludeFolderName: 1
