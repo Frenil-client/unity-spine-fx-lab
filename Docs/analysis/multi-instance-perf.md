@@ -78,9 +78,17 @@ Spine 내장 컬링(`updateWhenInvisible`)은 Unity `OnBecameVisible/Invisible` 
 | **managed** (컬링) | **4.29 ms** | 78 | 6.4 KB |
 | managed + **MPB Tint** | 4.22 ms | 78 | 6.6 KB |
 
-| naive | managed (컬링) | managed + MPB Tint |
-|---|---|---|
-| ![naive](Profiler_01.png) | ![managed](Profiler_02.png) | ![mpb](Profiler_03.png) |
+**naive** (300 FullUpdate) - 13.07 ms
+
+![naive](Profiler_01.png)
+
+**managed** (오프스크린 컬링) - 4.29 ms
+
+![managed](Profiler_02.png)
+
+**managed + MPB Tint** - 4.22 ms
+
+![mpb](Profiler_03.png)
 
 **해석 - 절약은 드로우콜이 아니라 CPU per-instance 갱신에서 나온다.**
 - **CPU 메인 13.07 -> 4.29 ms (~3.0x 단축)** : 컬링이 오프스크린 240체의 `MeshGenerator`+애니/제약 갱신을
