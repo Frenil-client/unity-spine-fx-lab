@@ -39,6 +39,7 @@ namespace SpineFxLab.Core
             if (anim == null) return;
             var sr = anim.GetComponent<SkeletonRenderer>();
             if (sr == null) return;
+            if (_skeletons.Contains(sr)) return;   // 중복 등록 시 리스트가 부풀어 모드 토글이 2회 수행됨
             // Spine 내장 컬링(Unity 가시성 기반)도 맞춰둠 - 매니저 LateUpdate 와 같은 방향으로 동작.
             sr.updateWhenInvisible = UpdateMode.Nothing;
             _skeletons.Add(sr);

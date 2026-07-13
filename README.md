@@ -67,6 +67,8 @@ Shaders/
 
 ### 핵심 설계 원칙
 - **머티리얼 증식 금지** - 인스턴스별 파라미터는 머티리얼 인스턴스가 아니라 **MaterialPropertyBlock**으로 주입. 머티리얼 1종 공유로 배칭 유지 + GC 억제.
+- **핫패스 무할당** - RT 이펙트의 매 프레임 쿼드 갱신(vertices/uv)은 재사용 배열로만 수행, 토폴로지(triangles/normals)는 생성 시 1회 설정. 활성 중 프레임당 관리 힙 할당 0.
+- **수명/빌드 안전** - 컴포넌트 비활성화 시 원본 렌더러 자동 복구(OnDisable), 쿼드/메시/RT 정리(OnDestroy). 합성 셰이더는 직렬화 참조로 연결해 빌드 스트리핑을 방지(비어 있으면 에디터에서 자동 채움).
 - **PMA(Premultiplied Alpha) 일관성** - Spine PMA 경로를 모든 셰이더에서 명시적으로 처리(straight 입력 -> 셰이더 premultiply, Linear 정합).
 - **데이터 주도** - 연출 수치는 하드코딩이 아니라 ScriptableObject(FxPreset/StatusEffectDef)로 정의.
 - **트리거 API 분리** - 게임 로직은 `controller.Play(preset)` / `SetStatus(def, on)` / `Fade(alpha, useGroup)` 수준만 호출.

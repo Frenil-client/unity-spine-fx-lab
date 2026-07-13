@@ -12,7 +12,7 @@ namespace SpineFxLab.Effects
     {
         Color _fadeColor = Color.white;   // a = 그룹 알파
 
-        protected override Shader QuadShader => Shader.Find("SpineFxLab/SpineFadeComposite");
+        protected override string QuadShaderName => "SpineFxLab/SpineFadeComposite";
 
         /// <summary>그룹 알파 설정. 1 이상 -> 일반 렌더 복귀(RT 해제), 미만 -> 통합 페이드.</summary>
         public void SetFade(float alpha)

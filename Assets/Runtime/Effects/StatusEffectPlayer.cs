@@ -68,6 +68,7 @@ namespace SpineFxLab.Effects
                 s.target = 0f;
                 s.timed = false;
             }
+            enabled = true;   // idle 로 잠들어 있었다면 페이드/타이머 진행 재개
             Apply();
         }
 
@@ -79,12 +80,14 @@ namespace SpineFxLab.Effects
                 _slots[i].target = 0f;
                 _slots[i].timed = false;
             }
+            enabled = true;   // 남은 강도의 페이드아웃 진행
             Apply();
         }
 
         void Update()
         {
             bool changed = false;
+            bool pending = false;   // 진행 중인 페이드/타이머 존재 여부
             float dt = Time.deltaTime;
             for (int i = 0; i < _slots.Length; i++)
             {
@@ -97,8 +100,10 @@ namespace SpineFxLab.Effects
                 float step = s.fade > 0f ? dt / s.fade : 1f;
                 float next = Mathf.MoveTowards(s.current, s.target, step);
                 if (!Mathf.Approximately(next, s.current)) { s.current = next; changed = true; }
+                if (s.timed || !Mathf.Approximately(s.current, s.target)) pending = true;
             }
             if (changed) Apply();
+            if (!pending) enabled = false;   // 전 슬롯 안정 상태 - SetStatus/ClearAll 이 다시 깨움
         }
 
         void Apply()

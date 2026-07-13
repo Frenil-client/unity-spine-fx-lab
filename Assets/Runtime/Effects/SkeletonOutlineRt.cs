@@ -16,7 +16,7 @@ namespace SpineFxLab.Effects
         static readonly int OutlineWidthId = Shader.PropertyToID("_OutlineWidthPixels");
         static readonly int RtTexelId = Shader.PropertyToID("_RtTexelSize");
 
-        protected override Shader QuadShader => Shader.Find("SpineFxLab/SpineOutlineRtComposite");
+        protected override string QuadShaderName => "SpineFxLab/SpineOutlineRtComposite";
         protected override int ScreenPaddingPixels => _outlineWidthPixels + 2;   // 외곽선 여백
 
         public bool IsOn => IsActive;

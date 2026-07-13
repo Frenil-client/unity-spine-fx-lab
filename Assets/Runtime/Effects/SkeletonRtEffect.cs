@@ -18,6 +18,9 @@ namespace SpineFxLab.Effects
         [SerializeField] protected int _maxRenderTextureSize = 1024;
         [Tooltip("RT 에 렌더할 셰이더 패스. URP 는 0.")]
         [SerializeField] protected int[] _shaderPasses = new int[1] { 0 };
+        [Tooltip("쿼드 합성 셰이더. 런타임 생성 머티리얼만 쓰는 셰이더는 직렬화 참조가 없으면 " +
+                 "빌드에서 스트리핑되므로 여기에 연결한다. 에디터에서는 비어 있으면 이름으로 자동 채움.")]
+        [SerializeField] Shader _quadShader;
 
         protected SkeletonRenderer _skeletonRenderer;
         protected MeshRenderer _meshRenderer;
@@ -34,6 +37,14 @@ namespace SpineFxLab.Effects
         readonly List<Material> _materials = new List<Material>();
         bool _active;
 
+        // 쿼드 메시 갱신용 재사용 버퍼. Mesh.vertices/uv setter 는 배열 내용을 복사하므로
+        // 매 프레임 같은 배열을 다시 써도 안전하다 (프레임당 할당 0).
+        readonly Vector3[] _quadVertices = new Vector3[4];
+        readonly Vector2[] _quadUvs = new Vector2[4];
+        static readonly int[] QuadTriangles = { 0, 1, 2, 2, 1, 3 };
+        static readonly Vector3[] QuadNormals =
+            { -Vector3.forward, -Vector3.forward, -Vector3.forward, -Vector3.forward };
+
         Vector2Int _screenSize, _usedSize, _allocatedSize;
         Vector2 _downScale = Vector2.one;
         Vector3 _wnd0, _wnd1, _wnd2, _wnd3;
@@ -44,7 +55,7 @@ namespace SpineFxLab.Effects
         protected RenderTexture CurrentRT => _renderTexture;
 
         // ---- 서브클래스 훅 ----
-        protected abstract Shader QuadShader { get; }
+        protected abstract string QuadShaderName { get; }  // 합성 셰이더 이름 (에디터 자동 채움용)
         protected virtual int ScreenPaddingPixels => 0;   // 외곽선 등 바깥 여백(px)
         protected virtual void OnBeforeAssign() { }        // 캡처 직전 쿼드 머티리얼 파라미터 갱신
 
@@ -57,14 +68,28 @@ namespace SpineFxLab.Effects
             _commandBuffer = new CommandBuffer { name = GetType().Name + " RT" };
             _propertyBlock = new MaterialPropertyBlock();
             CreateQuad();
-            _quad.SetActive(false);
+            if (_quad != null) _quad.SetActive(false);
         }
+
+#if UNITY_EDITOR
+        void OnValidate()
+        {
+            if (_quadShader == null) _quadShader = Shader.Find(QuadShaderName);
+        }
+#endif
+
+        // 비활성화 시 원본 렌더러 복구 + 구독 해제 + RT 반납.
+        // Unity 는 OnDestroy 전에 OnDisable 을 호출하므로 파괴 경로도 여기서 복구된다.
+        protected virtual void OnDisable() => SetEffectActive(false);
 
         protected virtual void OnDestroy()
         {
             if (_renderTexture) RenderTexture.ReleaseTemporary(_renderTexture);
             _commandBuffer?.Release();
             if (_quadMaterial != null) Destroy(_quadMaterial);
+            if (_quadMesh != null) Destroy(_quadMesh);
+            // 쿼드는 transform.parent 밑에 있어 이 오브젝트와 함께 파괴되지 않는다 - 직접 정리.
+            if (_quad != null) Destroy(_quad);
         }
 
         /// <summary>효과 활성/비활성. 활성 시 RT 캡처+쿼드, 비활성 시 원본 일반 렌더 복귀(RT 해제).</summary>
@@ -72,6 +97,7 @@ namespace SpineFxLab.Effects
         {
             if (on)
             {
+                if (_quadMaterial == null) return;   // 셰이더 누락 - CreateQuad 에서 이미 에러 보고됨
                 if (!_active)
                 {
                     if (_targetCamera == null) _targetCamera = Camera.main;
@@ -84,9 +110,10 @@ namespace SpineFxLab.Effects
             }
             else if (_active)
             {
-                _skeletonRenderer.OnMeshAndMaterialsUpdated -= RenderOntoQuad;
-                _meshRenderer.forceRenderingOff = false;
-                _quad.SetActive(false);
+                // 씬 teardown 중에는 파괴 순서가 임의라 각 참조에 null 가드가 필요하다.
+                if (_skeletonRenderer != null) _skeletonRenderer.OnMeshAndMaterialsUpdated -= RenderOntoQuad;
+                if (_meshRenderer != null) _meshRenderer.forceRenderingOff = false;
+                if (_quad != null) _quad.SetActive(false);
                 if (_renderTexture)
                 {
                     RenderTexture.ReleaseTemporary(_renderTexture);
@@ -99,6 +126,14 @@ namespace SpineFxLab.Effects
 
         void CreateQuad()
         {
+            var shader = _quadShader != null ? _quadShader : Shader.Find(QuadShaderName);
+            if (shader == null)
+            {
+                Debug.LogError($"[{GetType().Name}] 합성 셰이더({QuadShaderName})를 찾을 수 없습니다. " +
+                               "빌드 스트리핑을 막으려면 인스펙터의 Quad Shader 에 직렬화 참조를 지정하세요.", this);
+                return;
+            }
+
             _quad = new GameObject(name + " " + GetType().Name, typeof(MeshRenderer), typeof(MeshFilter));
             _quad.transform.SetParent(transform.parent, false);
             _quad.layer = _meshRenderer.gameObject.layer;
@@ -110,8 +145,13 @@ namespace SpineFxLab.Effects
             _quadMesh = new Mesh { name = "RtEffect Quad" };
             _quadMesh.MarkDynamic();
             _quadMesh.hideFlags = HideFlags.DontSaveInBuild | HideFlags.DontSaveInEditor;
+            // 토폴로지는 불변이라 1회만 설정하고, 이후엔 vertices/uv 만 재사용 배열로 갱신한다.
+            _quadMesh.vertices = _quadVertices;
+            _quadMesh.triangles = QuadTriangles;
+            _quadMesh.normals = QuadNormals;
+            _quadFilter.sharedMesh = _quadMesh;
 
-            _quadMaterial = new Material(QuadShader) { hideFlags = HideFlags.DontSave };
+            _quadMaterial = new Material(shader) { hideFlags = HideFlags.DontSave };
             _quadRenderer.material = _quadMaterial;
         }
 
@@ -121,7 +161,7 @@ namespace SpineFxLab.Effects
             var mesh = _meshFilter.sharedMesh;
             if (mesh == null) return;
             Vector3 size = mesh.bounds.size;
-            if (size.x == 0f || size.y == 0f) { _quadFilter.mesh = null; return; }
+            if (size.x == 0f || size.y == 0f) { _quadRenderer.enabled = false; return; }
 
             PrepareForMesh(mesh);
             RenderToRenderTexture(mesh);
@@ -256,16 +296,11 @@ namespace SpineFxLab.Effects
             qt.rotation = transform.rotation;
             qt.localScale = transform.localScale;
 
-            var verts = new Vector3[4]
-            {
-                qt.InverseTransformPoint(_wnd0),
-                qt.InverseTransformPoint(_wnd1),
-                qt.InverseTransformPoint(_wnd2),
-                qt.InverseTransformPoint(_wnd3),
-            };
-            _quadMesh.vertices = verts;
-            _quadMesh.triangles = new int[6] { 0, 1, 2, 2, 1, 3 };
-            _quadMesh.normals = new Vector3[4] { -Vector3.forward, -Vector3.forward, -Vector3.forward, -Vector3.forward };
+            _quadVertices[0] = qt.InverseTransformPoint(_wnd0);
+            _quadVertices[1] = qt.InverseTransformPoint(_wnd1);
+            _quadVertices[2] = qt.InverseTransformPoint(_wnd2);
+            _quadVertices[3] = qt.InverseTransformPoint(_wnd3);
+            _quadMesh.vertices = _quadVertices;
 
             float maxU = (float)_usedSize.x / _allocatedSize.x;
             float maxV = (float)_usedSize.y / _allocatedSize.y;
@@ -274,15 +309,16 @@ namespace SpineFxLab.Effects
                 maxU = _downScale.x * _screenSize.x / _allocatedSize.x;
                 maxV = _downScale.y * _screenSize.y / _allocatedSize.y;
             }
-            _quadMesh.uv = new Vector2[4]
-            {
-                new Vector2(_uv0.x * maxU, _uv0.y * maxV),
-                new Vector2(_uv1.x * maxU, _uv1.y * maxV),
-                new Vector2(_uv2.x * maxU, _uv2.y * maxV),
-                new Vector2(_uv3.x * maxU, _uv3.y * maxV),
-            };
+            _quadUvs[0] = new Vector2(_uv0.x * maxU, _uv0.y * maxV);
+            _quadUvs[1] = new Vector2(_uv1.x * maxU, _uv1.y * maxV);
+            _quadUvs[2] = new Vector2(_uv2.x * maxU, _uv2.y * maxV);
+            _quadUvs[3] = new Vector2(_uv3.x * maxU, _uv3.y * maxV);
+            _quadMesh.uv = _quadUvs;
 
-            _quadFilter.mesh = _quadMesh;
+            // triangles 를 매번 재할당하지 않으므로 bounds 자동 재계산이 없다 - 명시 호출.
+            _quadMesh.RecalculateBounds();
+
+            _quadRenderer.enabled = true;
             _quadMaterial.mainTexture = _renderTexture;
         }
 
