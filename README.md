@@ -98,6 +98,7 @@ Shaders/
 - [x] **마감** - 대표 GIF 3종 + Profiler 표 + 분석 노트 3종 + README 갤러리 완성
 
 > ★ 두 문제의 상세 분석은 [`Docs/analysis/`](Docs/analysis) 참조.
+> 한 프레임 안에서 각 기능이 개입하는 시점은 [`Docs/frame-timing.md`](Docs/frame-timing.md)에 정리했다.
 
 ---
 
